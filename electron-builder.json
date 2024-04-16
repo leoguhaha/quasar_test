@@ -1,0 +1,18 @@
+{
+  "productName": "DxrApp",
+  "appId": "dxr.test.app",
+  "directories": {
+    "output": "build"
+  },
+  "files": [
+    "dist/electron/**/*"
+  ],
+  "win": {
+    "target": "nsis",
+    "icon": "src-electron/icons/icon.ico"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true
+  }
+}
