@@ -8,6 +8,10 @@
       </q-toolbar>
     </q-header>
 
+    <div style="margin-top: 100px">速度</div>
+    <div>v: {{ app_cmd_vel_msg.v }}</div>
+    <div>w: {{ app_cmd_vel_msg.w }}</div>
+
     <q-page-container>
       <div class="row">
         <canvas
@@ -35,10 +39,16 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import JSMpeg from "jsmpeg-player";
 import { useWebSocketSubscriptions } from "src/composables/useWebSocketSubscriptions";
 const { subscribe, unsubscribe } = useWebSocketSubscriptions();
+
+const app_cmd_vel_msg = ref({
+  v: 0,
+  w: 0,
+});
+
 onMounted(() => {
   // 初始化rtsp，通知后端，让后端进行rtsp拉流，并且转成websocket
   const res = window.mainApi.sendSync(
@@ -74,6 +84,12 @@ onMounted(() => {
   subscribe("/app_cmd_vel", (message) => {
     // 这里处理/app_cmd_vel话题的消息
     console.log("Received /app_cmd_vel message:", message);
+    let msg_obj = JSON.parse(JSON.parse(message));
+    console.log("MSG Content:", msg_obj["msg"]);
+    app_cmd_vel_msg.value = {
+      v: msg_obj.msg?.v ?? 0, // 如果v不存在，使用默认值0
+      w: msg_obj.msg?.w ?? 0, // 如果w不存在，使用默认值0
+    };
   });
   subscribe("/cmd_status", (message) => {
     // 这里处理/app_cmd_vel话题的消息
