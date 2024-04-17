@@ -112,8 +112,4 @@ function drawRectangleOnCanvas(canvas, x, y, width, height, color = "red") {
   // ctx.bezierCurveTo(85, 125, 75, 137, 75, 140);
   // ctx.fill();
 }
-
-function app_cmd_vel_callback(msg) {
-  console.log(msg);
-}
 </script>
