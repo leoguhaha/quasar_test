@@ -93,8 +93,19 @@ ipcMain.on("openRtsp", (event, rtsp) => {
       // ffmpegPath: config.ffmpegPath,
       ffmpegOptions: {
         "-stats": "",
-        "-r": 30,
+        "-r": 20,
+        "-s": "320x240",
+        "-preset": "ultrafast",
+        "-tune": "zerolatency",
       },
+      // ffmpegOptions: {
+      //   "-stats": "",
+      //   "-r": 15,
+      //   // "-s": "640x360",
+      //   // "-c:v": "h264_nvenc",
+      //   "-preset": "ultrafast",
+      //   // "-tune": "zerolatency",
+      // }
     }).on("exitWithError", () => {
       stream.stop();
       delete rtspOpenders[rtsp];

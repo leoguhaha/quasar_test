@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas :id="`video-canvas-${index}`" style="width: 400px; height: 200px;"></canvas>
+    <canvas :id="`video-canvas-${index}`" style="width: 400px; height: 200px;" ></canvas>
     <canvas
           :id="`overlay-canvas-${index}`"
           style="
