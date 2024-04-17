@@ -1,29 +1,29 @@
-/**
- * This file is used specifically for security reasons.
- * Here you can access Nodejs stuff and inject functionality into
- * the renderer thread (accessible there through the "window" object)
- *
- * WARNING!
- * If you import anything from node_modules, then make sure that the package is specified
- * in package.json > dependencies and NOT in devDependencies
- *
- * Example (injects window.myAPI.doAThing() into renderer thread):
- *
- *   import { contextBridge } from 'electron'
- *
- *   contextBridge.exposeInMainWorld('myAPI', {
- *     doAThing: () => {}
- *   })
- *
- * WARNING!
- * If accessing Node functionality (like importing @electron/remote) then in your
- * electron-main.js you will need to set the following when you instantiate BrowserWindow:
- *
- * mainWindow = new BrowserWindow({
- *   // ...
- *   webPreferences: {
- *     // ...
- *     sandbox: false // <-- to be able to import @electron/remote in preload script
- *   }
- * }
- */
+// preload.js
+const { contextBridge, ipcRenderer } = require("electron");
+
+contextBridge.exposeInMainWorld("mainApi", {
+  sendSync: (channel, data) => {
+    return ipcRenderer.sendSync(channel, data);
+  },
+  sendAsync: (channel, data) => {
+    return ipcRenderer.invoke(channel, data);
+  },
+  receive: (channel, func) => {
+    ipcRenderer.on(channel, (event, ...args) => func(...args));
+  },
+  subscribe: (topic) => {
+    ipcRenderer.send("subscribe", topic); // 前端请求订阅主题
+  },
+  unsubscribe: (topic) => {
+    ipcRenderer.send("unsubscribe", topic); // 前端请求取消订阅
+  },
+  sendMessage: (topic, message) => {
+    ipcRenderer.send("sendMessage", topic, message); // 前端发送消息
+  },
+  onMessage: (func) => {
+    // 从主进程接收消息
+    ipcRenderer.on("message", (event, topic, message) => {
+      func(topic, message);
+    });
+  },
+});

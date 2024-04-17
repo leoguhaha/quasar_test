@@ -1,0 +1,18 @@
+[
+  {
+    "topic": "/app_cmd_vel",
+    "type": "subscribe"
+  },
+  {
+    "topic": "/cmd_status",
+    "type": "subscribe"
+  },
+  {
+    "topic": "topic3",
+    "type": "publish"
+  },
+  {
+    "topic": "topic4",
+    "type": "subscribe"
+  }
+]
