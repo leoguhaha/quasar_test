@@ -1,9 +1,13 @@
+const Video = () => import('pages/VideoDisplay.vue')
+const VideoGrid = () => import('pages/VideoGrid.vue')
+
 const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/IndexPage.vue') }
+      // { path: '', component: () => import('pages/IndexPage.vue') },
+      { path: '', component: VideoGrid},
     ]
   },
 

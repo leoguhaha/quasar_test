@@ -1,18 +1,35 @@
 <template>
   <div>
-    <canvas id="video-canvas1" style="width: 100%; height: 100%;"></canvas>
-    <canvas id="overlay-canvas" style="width: 100%; height: 100%;"></canvas>
+    <canvas :id="`video-canvas-${index}`" style="width: 400px; height: 200px;"></canvas>
+    <canvas
+          :id="`overlay-canvas-${index}`"
+          style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 400px;
+            height: 200px;
+            pointer-events: none;
+          "
+        ></canvas>
   </div>
 </template>
 <script setup>
 import { onMounted } from 'vue'
 import JSMpeg from 'jsmpeg-player'
 
+const props = defineProps({
+  videoUrl: String,
+  index: Number
+})
+
+// 使用简单的替换字符串的方式生成 canvasId
 onMounted(() => {
+  const videoUrl = props.videoUrl;
   // 初始化rtsp，通知后端，让后端进行rtsp拉流，并且转成websocket
   const res = window.mainApi.sendSync(
     "openRtsp",
-    "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/101"
+    videoUrl
   );
   if (res.code !== 200) {
     console.error(res.msg);
@@ -23,20 +40,19 @@ onMounted(() => {
   const wsUrl = res.ws;
   try {
     const player = new JSMpeg.Player(wsUrl, {
-      canvas: document.getElementById("video-canvas1"),
+      canvas: document.getElementById(`video-canvas-${props.index}`),
     });
-    // 在这设定周期性调用绘制函数；这里的100是示例间隔毫秒数，您可以根据需要微调
-    const overlayCanvas = document.getElementById("overlay-canvas");
-    overlayCanvas.width = overlayCanvas.offsetWidth;
-    overlayCanvas.height = overlayCanvas.offsetHeight;
-    setInterval(() => {
-      // 清除之前的绘制内容
-      overlayCanvas
-        .getContext("2d")
-        .clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-      // 画框和文字
-      drawRectangleOnCanvas(overlayCanvas, 950, 100, 200, 100);
-    }, 100);
+    // const overlayCanvas = document.getElementById(`overlay-canvas-${props.index}`);
+    // overlayCanvas.width = overlayCanvas.offsetWidth;
+    // overlayCanvas.height = overlayCanvas.offsetHeight;
+    // setInterval(() => {
+    //   // 清除之前的绘制内容
+    //   overlayCanvas
+    //     .getContext("2d")
+    //     .clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+    //   // 画框和文字
+    //   drawRectangleOnCanvas(overlayCanvas, 200, 100, 100, 50);
+    // }, 100);
   } catch (error) {
     console.error("Error playing video:", error);
   }
@@ -68,3 +84,4 @@ function drawRectangleOnCanvas(canvas, x, y, width, height, color = "red") {
     // ctx.bezierCurveTo(85, 125, 75, 137, 75, 140);
     // ctx.fill();
   }
+</script>

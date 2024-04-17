@@ -90,7 +90,7 @@ ipcMain.on("openRtsp", (event, rtsp) => {
       name: `socket-${addPort}`,
       streamUrl: rtsp,
       wsPort: addPort,
-      ffmpegPath: config.ffmpegPath,
+      // ffmpegPath: config.ffmpegPath,
       ffmpegOptions: {
         "-stats": "",
         "-r": 30,
