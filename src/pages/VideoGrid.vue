@@ -23,7 +23,7 @@ export default {
       videoUrls: [
         "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/101",
         "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
-        "rtsp://admin:Asb11023@192.168.111.10:554/Streaming/tracks/102",
+        "rtsp://admin:Asb11023@192.168.111.10:554/Streaming/tracks/101",
         "rtsp://admin:Asb11023@192.168.111.10:554/Streaming/tracks/201",
         "rtsp://admin:Asb11023@192.168.111.10:554/Streaming/tracks/102?starttime=20240417T112200Z&endtime=20240417T114000Z",
         "rtsp://admin:Asb11023@192.168.111.10:554/Streaming/tracks/201?starttime=20240417T122200Z&endtime=20240417T134000Z",

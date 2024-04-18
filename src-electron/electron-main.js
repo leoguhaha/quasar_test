@@ -97,15 +97,9 @@ ipcMain.on("openRtsp", (event, rtsp) => {
         "-s": "320x240",
         "-preset": "ultrafast",
         "-tune": "zerolatency",
+        "-loglevel": "quiet",  // 不显示ffmpeg的日志信息
+        "-nostats": "",  // 不显示ffmpeg的统计信息
       },
-      // ffmpegOptions: {
-      //   "-stats": "",
-      //   "-r": 15,
-      //   // "-s": "640x360",
-      //   // "-c:v": "h264_nvenc",
-      //   "-preset": "ultrafast",
-      //   // "-tune": "zerolatency",
-      // }
     }).on("exitWithError", () => {
       stream.stop();
       delete rtspOpenders[rtsp];

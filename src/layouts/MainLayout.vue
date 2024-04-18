@@ -5,25 +5,17 @@
         <q-toolbar-title> Dxr APP Test Version </q-toolbar-title>
         <div>Quasar v{{ $q.version }}</div>
       </q-toolbar> -->
-      <q-tabs align="left">
+      <q-tabs align="justify">
         <q-route-tab to="" label="调度" />
         <q-route-tab to="" label="地图" />
         <q-route-tab to="" label="历史警情" />
       </q-tabs>
     </q-header>
-<!--
-    <div style="margin-top: 100px">速度</div>
-    <div>v: {{ app_cmd_vel_msg.v }}</div>
-    <div>w: {{ app_cmd_vel_msg.w }}</div> -->
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered width="150">
       <q-list>
-        <q-item-label header>哨兵列表</q-item-label>
+        <q-item-label header style="background-color:darkslateblue; color: black; border: 10cap;">哨兵列表</q-item-label>
 
-        <EssentialLink
-          v-for="link in linksList"
-          :key="link.title"
-          v-bind="link"
-        />
+        <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
       </q-list>
     </q-drawer>
 
@@ -34,8 +26,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from "vue";
-import JSMpeg from "jsmpeg-player";
+import { ref } from "vue";
 import { useWebSocketSubscriptions } from "src/composables/useWebSocketSubscriptions";
 import EssentialLink from "src/components/EssentialLink.vue";
 
@@ -86,7 +77,6 @@ const linksList = [
   },
 ];
 const leftDrawerOpen = ref(false);
-
 const app_cmd_vel_msg = ref({
   v: 0,
   w: 0,
