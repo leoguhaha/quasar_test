@@ -76,7 +76,7 @@ const rtspOpenders = {};
 let addPort = 9000;
 
 // 设置ipcMain的监听器处理同步消息
-ipcMain.on("openRtsp", (event, rtsp) => {
+ipcMain.on("openRtsp", (event, rtsp, isHighQuality = false) => {
   /** 判断是否已开启,若已开启,直接返回ws地址, 未开启则先开启再返回 */
   if (rtspOpenders[rtsp]) {
     event.returnValue = {
