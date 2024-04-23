@@ -1,26 +1,15 @@
 <template>
   <q-layout view="hHh Lpr lFf">
-    <q-header elevated>
-      <!-- <q-toolbar>
-        <q-toolbar-title> Dxr APP Test Version </q-toolbar-title>
-        <div>Quasar v{{ $q.version }}</div>
-      </q-toolbar> -->
+    <q-header elevated class="bg-primary text-white" style="height: 4vh">
       <q-tabs align="justify">
         <q-route-tab to="" label="调度" />
         <q-route-tab to="" label="地图" />
         <q-route-tab to="" label="历史警情" />
       </q-tabs>
     </q-header>
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered width="150">
-      <q-list>
-        <q-item-label header style="background-color:darkslateblue; color: black; border: 10cap;">哨兵列表</q-item-label>
-
-        <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
-      </q-list>
-    </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view style="width: 100%; height: 96vh" />
     </q-page-container>
   </q-layout>
 </template>
@@ -34,45 +23,45 @@ const { subscribe, unsubscribe } = useWebSocketSubscriptions();
 
 const linksList = [
   {
-    title: '执勤组1',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
+    title: "执勤组1",
+    caption: "quasar.dev",
+    icon: "school",
+    link: "https://quasar.dev",
   },
   {
-    title: '机器人A1',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
+    title: "机器人A1",
+    caption: "github.com/quasarframework",
+    icon: "code",
+    link: "https://github.com/quasarframework",
   },
   {
-    title: '机器人A2',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
+    title: "机器人A2",
+    caption: "chat.quasar.dev",
+    icon: "chat",
+    link: "https://chat.quasar.dev",
   },
   {
-    title: '车载B1',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
+    title: "车载B1",
+    caption: "forum.quasar.dev",
+    icon: "record_voice_over",
+    link: "https://forum.quasar.dev",
   },
   {
-    title: '固定C1',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
+    title: "固定C1",
+    caption: "@quasarframework",
+    icon: "rss_feed",
+    link: "https://twitter.quasar.dev",
   },
   {
-    title: '执勤组2',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
+    title: "执勤组2",
+    caption: "@QuasarFramework",
+    icon: "public",
+    link: "https://facebook.quasar.dev",
   },
   {
-    title: '机器人A3',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
+    title: "机器人A3",
+    caption: "Community Quasar projects",
+    icon: "favorite",
     // link: 'https://awesome.quasar.dev',
   },
 ];

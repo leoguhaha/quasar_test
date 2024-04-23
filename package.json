@@ -22,6 +22,7 @@
     "node-rtsp-stream": "^0.0.9",
     "quasar": "^2.8.0",
     "uuid": "^9.0.1",
+    "viewerjs": "^1.11.6",
     "vue": "^3.4.18",
     "vue-router": "^4.0.12"
   },

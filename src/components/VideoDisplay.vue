@@ -1,38 +1,33 @@
 <template>
-  <div>
-    <canvas :id="`video-canvas-${index}`" style="width: 400px; height: 200px;"></canvas>
-    <canvas :id="`overlay-canvas-${index}`" style="
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 400px;
-            height: 200px;
-            pointer-events: none;
-          "></canvas>
+  <div class="video-container">
+    <canvas :id="`video-canvas-${index}`"></canvas>
+    <canvas
+      :id="`overlay-canvas-${index}`"
+      style="position: absolute; top: 0; left: 0; pointer-events: none"
+    ></canvas>
   </div>
 </template>
 <script setup>
-import { onMounted } from 'vue'
-import JSMpeg from 'jsmpeg-player'
+import { onMounted } from "vue";
+import JSMpeg from "jsmpeg-player";
 
 const props = defineProps({
   videoUrl: String,
   index: Number,
   width: {
     type: String,
-    default: '400px'
+    default: "100%",
   },
-  
-})
+});
 
 // 使用简单的替换字符串的方式生成 canvasId
 onMounted(() => {
   const videoUrl = props.videoUrl;
+  console.log("videoUrl", videoUrl);
+  console.log("index", props.index);
+  // return;
   // 初始化rtsp，通知后端，让后端进行rtsp拉流，并且转成websocket
-  const res = window.mainApi.sendSync(
-    "openRtsp",
-    videoUrl
-  );
+  const res = window.mainApi.sendSync("openRtsp", videoUrl);
   if (res.code !== 200) {
     console.error(res.msg);
     // 前端直接弹框
@@ -40,6 +35,7 @@ onMounted(() => {
     return;
   }
   const wsUrl = res.ws;
+  console.log("wsUrl", wsUrl);
   try {
     const player = new JSMpeg.Player(wsUrl, {
       canvas: document.getElementById(`video-canvas-${props.index}`),
@@ -58,7 +54,7 @@ onMounted(() => {
   } catch (error) {
     console.error("Error playing video:", error);
   }
-})
+});
 // 在canvas上绘制图形
 function drawRectangleOnCanvas(canvas, x, y, width, height, color = "red") {
   const ctx = canvas.getContext("2d"); // 获取canvas的绘图上下文
@@ -87,3 +83,22 @@ function drawRectangleOnCanvas(canvas, x, y, width, height, color = "red") {
   // ctx.fill();
 }
 </script>
+<style>
+.video-container {
+  position: relative;
+  /* 确保容器有具体的尺寸 */
+  width: 100%; /* 根据你的需要调整 */
+  height: 100%; /* 例如，根据你的需要调整为视口高度的100% */
+  overflow: hidden;
+  border: 1px solid #ccc;
+}
+
+.video-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill; /* 覆盖整个容器，不保持纵横比 */
+}
+</style>

@@ -32,6 +32,7 @@ function createWindow() {
     icon: path.resolve(__dirname, "icons/icon.png"), // tray icon
     width: 1000,
     height: 600,
+    fullscreen: true, // 添加此行代码
     useContentSize: true,
     webPreferences: {
       contextIsolation: true,
@@ -78,6 +79,7 @@ let addPort = 9000;
 // 设置ipcMain的监听器处理同步消息
 ipcMain.on("openRtsp", (event, rtsp, isHighQuality = false) => {
   /** 判断是否已开启,若已开启,直接返回ws地址, 未开启则先开启再返回 */
+  console.log("openRtsp", rtsp);
   if (rtspOpenders[rtsp]) {
     event.returnValue = {
       code: 200,
