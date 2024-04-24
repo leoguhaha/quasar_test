@@ -1,12 +1,14 @@
 <template>
   <q-layout view="hHh Lpr lFf">
-    <q-header elevated class="bg-primary text-white" style="height: 4vh">
-      <q-tabs align="justify">
-        <q-route-tab to="" label="调度" />
-        <q-route-tab to="" label="地图" />
-        <q-route-tab to="" label="历史警情" />
-      </q-tabs>
-    </q-header>
+    <!-- <q-header elevated class="bg-primary text-white header-flex-center">
+
+    </q-header> -->
+    <q-tabs v-model="tab" dense class="bg-primary text-grey-5 shadow-2" inline-label active-color="white"
+      indicator-color="transparent">
+      <q-tab icon="alarm" label="调度" />
+      <q-tab icon="map" label="地图" />
+      <q-tab icon="warning" label="历史警情" />
+    </q-tabs>
 
     <q-page-container>
       <router-view style="width: 100%; height: 96vh" />
@@ -20,51 +22,6 @@ import { useWebSocketSubscriptions } from "src/composables/useWebSocketSubscript
 import EssentialLink from "src/components/EssentialLink.vue";
 
 const { subscribe, unsubscribe } = useWebSocketSubscriptions();
-
-const linksList = [
-  {
-    title: "执勤组1",
-    caption: "quasar.dev",
-    icon: "school",
-    link: "https://quasar.dev",
-  },
-  {
-    title: "机器人A1",
-    caption: "github.com/quasarframework",
-    icon: "code",
-    link: "https://github.com/quasarframework",
-  },
-  {
-    title: "机器人A2",
-    caption: "chat.quasar.dev",
-    icon: "chat",
-    link: "https://chat.quasar.dev",
-  },
-  {
-    title: "车载B1",
-    caption: "forum.quasar.dev",
-    icon: "record_voice_over",
-    link: "https://forum.quasar.dev",
-  },
-  {
-    title: "固定C1",
-    caption: "@quasarframework",
-    icon: "rss_feed",
-    link: "https://twitter.quasar.dev",
-  },
-  {
-    title: "执勤组2",
-    caption: "@QuasarFramework",
-    icon: "public",
-    link: "https://facebook.quasar.dev",
-  },
-  {
-    title: "机器人A3",
-    caption: "Community Quasar projects",
-    icon: "favorite",
-    // link: 'https://awesome.quasar.dev',
-  },
-];
 const leftDrawerOpen = ref(false);
 const app_cmd_vel_msg = ref({
   v: 0,
@@ -92,3 +49,26 @@ const app_cmd_vel_msg = ref({
 //   unsubscribe("/cmd_status");
 // });
 </script>
+<style>
+.header-flex-center {
+  display: flex;
+  align-items: center;
+  height: 30px;
+}
+
+/* 这个类用于使得 q-tabs 整体宽度填充父容器 */
+.full-width-tabs {
+  width: 100%;
+  justify-content: space-around;
+  /* 这将确保tab之间的间隔均匀 */
+}
+
+/* 用于使每个 tab 标签具有相同的弹性 */
+.q-tab,
+.q-route-tab {
+  flex-grow: 1;
+  /* 使每个tab都填充相同比例的可用空间 */
+  text-align: center;
+  /* 增加这一行确保每个 tab 内的文字也居中 */
+}
+</style>

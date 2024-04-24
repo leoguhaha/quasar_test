@@ -11,9 +11,13 @@
  * Boot files are your "main.js"
  **/
 
+import lang from 'quasar/lang/zh-CN'
+
+import iconSet from 'quasar/icon-set/material-icons'
 
 
 
 
-export default { config: {} }
+
+export default { config: {},lang,iconSet }
 
