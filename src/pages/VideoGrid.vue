@@ -1,19 +1,25 @@
 <template>
-  <q-layout>
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" border>
-      <q-list>
-        <q-item-label header class="custom-item-label bg-primary">哨兵列表</q-item-label>
-        <q-expansion-item v-for="menuItem in menuItems" :key="menuItem.label" :label="menuItem.label" icon="layers" class="bg-orange">
-          <q-item v-for="subItem in menuItem.children" :key="subItem" clickable v-close-popup
-            @click="handleClick(subItem)" class="bg-yellow">
-            <q-item-section>{{ subItem }}</q-item-section>
-          </q-item>
-        </q-expansion-item>
+  <q-layout container=true>
+    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" border class="custom-drawer">
+      <q-list class="drawer-list">
+        <div class="sticky-header">
+          <q-item-label header class="custom-item-label bg-primary text-bold q-pa-md">哨兵列表</q-item-label>
+        </div>
+        <div class="scrollable-content">
+          <q-expansion-item v-for="menuItem in menuItems" :key="menuItem.label" :label="menuItem.label" icon="layers"
+            class="bg-orange-8" default-opened>
+            <q-item v-for="subItem in menuItem.children" :key="subItem" clickable v-close-popup
+              @click="handleClick(subItem)" class="bg-light-green-2">
+              <q-item-section>{{ subItem }}</q-item-section>
+            </q-item>
+          </q-expansion-item>
+        </div>
       </q-list>
     </q-drawer>
     <q-page-container>
-      <q-item-label header class="custom-item-label bg-primary">视频</q-item-label>
+      <q-item-label header class="custom-item-label bg-primary text-bold">视频</q-item-label>
       <video-wall :video-urls="videoUrls" style="height: 60vh"></video-wall>
+      <q-item-label header class="custom-item-label bg-purple-2 text-bold">最新预警</q-item-label>
       <my-logs style="height: 35vh"></my-logs>
     </q-page-container>
   </q-layout>
@@ -25,25 +31,38 @@ import MyLogs from "src/components/MyLogs.vue";
 import { ref } from 'vue';
 
 const videoUrls = ref([
-  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/101",
-  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
-  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
-  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
-  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
-  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
-  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
-  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
-  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/101",
+  // "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/101",
+  "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/201",
+  "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
 ]);
 const leftDrawerOpen = ref(true);
 const menuItems = ref([
   {
     label: '执勤组1',
-    children: ['机器人A1', '机器人A2']
+    children: ['机器人A1', '机器人A2', '车载B1', '固定C1']
   },
   {
     label: '执勤组2',
-    children: ['机器人A3', '机器人A4']
+    children: ['机器人A3', '固定C2', '固定C3', '车载B2']
+  },
+  {
+    label: '执勤组3',
+    children: ['机器人A4', '固定C4', '车载B3', '车载B4', 'checc', 'casd']
   }
 ]);
 function handleClick(item) {
@@ -63,5 +82,20 @@ function handleClick(item) {
   /* font-weight: bold; */
   border: 1px solid gray;
   justify-content: center;
+}
+
+.custom-drawer .drawer-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sticky-header {
+  flex-shrink: 0;
+}
+
+.scrollable-content {
+  overflow-y: auto;
+  flex-grow: 1;
 }
 </style>

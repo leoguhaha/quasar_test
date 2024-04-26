@@ -1,18 +1,25 @@
 <template>
-  <q-layout view="hHh Lpr lFf">
-    <!-- <q-header elevated class="bg-primary text-white header-flex-center">
-
-    </q-header> -->
-    <q-tabs v-model="tab" dense class="bg-primary text-grey-5 shadow-2" inline-label active-color="white"
+  <q-layout view="hHh Lpr lff">
+    <q-tabs v-model="tab" dense class="bg-primary text-grey-5 shadow-2 bold-tabs" inline-label active-color="white"
       indicator-color="transparent">
-      <q-tab icon="alarm" label="调度" />
-      <q-tab icon="map" label="地图" />
-      <q-tab icon="warning" label="历史警情" />
+      <q-tab name="diaodu" icon="alarm" label="调度"/>
+      <q-tab name="ditu" icon="map" label="地图" />
+      <q-tab name="jingqing" icon="warning" label="历史警情" />
     </q-tabs>
 
     <q-page-container>
-      <router-view style="width: 100%; height: 96vh" />
+      <router-view />
     </q-page-container>
+
+    <q-footer elevated class="bg-yellow-14 text-red-6">
+      <div class="q-pa-md" style="display: flex; justify-content: space-between;">
+        <div class="text-bold">当前登录用户信息</div>
+        <div class="text-bold">部署方案管理</div>
+        <div class="text-bold">报障运维管理</div>
+        <div class="text-bold">用户权限管理</div>
+        <div class="text-bold">非预警数据管理</div>
+      </div>
+    </q-footer>
   </q-layout>
 </template>
 
@@ -23,10 +30,12 @@ import EssentialLink from "src/components/EssentialLink.vue";
 
 const { subscribe, unsubscribe } = useWebSocketSubscriptions();
 const leftDrawerOpen = ref(false);
+const currentUser = ref('张三');
 const app_cmd_vel_msg = ref({
   v: 0,
   w: 0,
 });
+const tab = ref('diaodu')
 
 // onMounted(() => {
 //   subscribe("/app_cmd_vel", (message) => {
@@ -70,5 +79,8 @@ const app_cmd_vel_msg = ref({
   /* 使每个tab都填充相同比例的可用空间 */
   text-align: center;
   /* 增加这一行确保每个 tab 内的文字也居中 */
+}
+.bold-tabs .q-tab__label {
+  font-weight: bold;
 }
 </style>

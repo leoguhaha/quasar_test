@@ -1,14 +1,11 @@
 <template>
   <div class="video-container">
     <canvas :id="`video-canvas-${index}`"></canvas>
-    <canvas
-      :id="`overlay-canvas-${index}`"
-      style="position: absolute; top: 0; left: 0; pointer-events: none"
-    ></canvas>
+    <canvas :id="`overlay-canvas-${index}`" style="position: absolute; top: 0; left: 0; pointer-events: none"></canvas>
   </div>
 </template>
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, watch } from "vue";
 import JSMpeg from "jsmpeg-player";
 
 const props = defineProps({
@@ -19,15 +16,15 @@ const props = defineProps({
     default: "100%",
   },
 });
+// 发射点击事件
+const emit = defineEmits(['videoClicked']);
+let player = null;
+let res = null;
 
-// 使用简单的替换字符串的方式生成 canvasId
 onMounted(() => {
   const videoUrl = props.videoUrl;
-  console.log("videoUrl", videoUrl);
-  console.log("index", props.index);
-  // return;
   // 初始化rtsp，通知后端，让后端进行rtsp拉流，并且转成websocket
-  const res = window.mainApi.sendSync("openRtsp", videoUrl);
+  res = window.mainApi.sendSync("openRtsp", videoUrl);
   if (res.code !== 200) {
     console.error(res.msg);
     // 前端直接弹框
@@ -35,26 +32,65 @@ onMounted(() => {
     return;
   }
   const wsUrl = res.ws;
-  console.log("wsUrl", wsUrl);
+  // console.log("wsUrl", wsUrl);
+  initializePlayer(wsUrl);
+  const videoCanvas = document.getElementById(`video-canvas-${props.index}`);
+  videoCanvas.addEventListener('click', () => {
+    // 当点击时，发送一个videoClicked事件，附带视频索引
+    emit('videoClicked', props.index);
+  });
+  // const overlayCanvas = document.getElementById(`overlay-canvas-${props.index}`);
+  // overlayCanvas.width = overlayCanvas.offsetWidth;
+  // overlayCanvas.height = overlayCanvas.offsetHeight;
+  // setInterval(() => {
+  //   // 清除之前的绘制内容
+  //   overlayCanvas
+  //     .getContext("2d")
+  //     .clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+  //   // 画框和文字
+  //   drawRectangleOnCanvas(overlayCanvas, 200, 100, 100, 50);
+  // }, 100);
+
+  // 假设一个用于重载视频的方法
+  const reloadVideo = () => {
+    console.log('Reloading video for URL', props.videoUrl);
+    // 重载视频逻辑...
+    reloadUrl();
+  };
+
+  // 使用Vue的响应性API监听props.videoUrl的变化
+  watch(() => props.videoUrl, (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+      reloadVideo();
+    }
+  });
+});
+// 重新加载视频
+function reloadUrl() {
+  const videoUrl = props.videoUrl;
+  console.log("Reloading video for URL", videoUrl);
+  const res = window.mainApi.sendSync("openRtsp", videoUrl);
+  if (res.code !== 200) {
+    console.error(res.msg);
+    alert(res.msg);
+    return;
+  }
+  player.stop();
+  // player.destroy();
+  player = null;
+  console.log('res', res);
+  const wsUrl = res.ws;
+  initializePlayer(wsUrl);
+}
+function initializePlayer(wsUrl) {
   try {
-    const player = new JSMpeg.Player(wsUrl, {
+    player = new JSMpeg.Player(wsUrl, {
       canvas: document.getElementById(`video-canvas-${props.index}`),
     });
-    // const overlayCanvas = document.getElementById(`overlay-canvas-${props.index}`);
-    // overlayCanvas.width = overlayCanvas.offsetWidth;
-    // overlayCanvas.height = overlayCanvas.offsetHeight;
-    // setInterval(() => {
-    //   // 清除之前的绘制内容
-    //   overlayCanvas
-    //     .getContext("2d")
-    //     .clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-    //   // 画框和文字
-    //   drawRectangleOnCanvas(overlayCanvas, 200, 100, 100, 50);
-    // }, 100);
   } catch (error) {
     console.error("Error playing video:", error);
   }
-});
+}
 // 在canvas上绘制图形
 function drawRectangleOnCanvas(canvas, x, y, width, height, color = "red") {
   const ctx = canvas.getContext("2d"); // 获取canvas的绘图上下文
@@ -87,8 +123,10 @@ function drawRectangleOnCanvas(canvas, x, y, width, height, color = "red") {
 .video-container {
   position: relative;
   /* 确保容器有具体的尺寸 */
-  width: 100%; /* 根据你的需要调整 */
-  height: 100%; /* 例如，根据你的需要调整为视口高度的100% */
+  width: 100%;
+  /* 根据你的需要调整 */
+  height: 100%;
+  /* 例如，根据你的需要调整为视口高度的100% */
   overflow: hidden;
   border: 1px solid #ccc;
 }
@@ -99,6 +137,7 @@ function drawRectangleOnCanvas(canvas, x, y, width, height, color = "red") {
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: fill; /* 覆盖整个容器，不保持纵横比 */
+  object-fit: fill;
+  /* 覆盖整个容器，不保持纵横比 */
 }
 </style>
