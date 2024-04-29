@@ -2,9 +2,9 @@
   <q-layout container=true>
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" border class="custom-drawer">
       <q-list class="drawer-list">
-        <div class="sticky-header">
+        <!-- <div class="sticky-header">
           <q-item-label header class="custom-item-label bg-primary text-bold q-pa-md">哨兵列表</q-item-label>
-        </div>
+        </div> -->
         <div class="scrollable-content">
           <q-expansion-item v-for="menuItem in menuItems" :key="menuItem.label" :label="menuItem.label" icon="layers"
             class="bg-orange-8" default-opened>
@@ -17,9 +17,9 @@
       </q-list>
     </q-drawer>
     <q-page-container>
-      <q-item-label header class="custom-item-label bg-primary text-bold">视频</q-item-label>
-      <video-wall :video-urls="videoUrls" style="height: 60vh"></video-wall>
-      <q-item-label header class="custom-item-label bg-purple-2 text-bold">最新预警</q-item-label>
+      <!-- <q-item-label header class="custom-item-label bg-primary text-bold">视频</q-item-label> -->
+      <video-wall :video-urls="videoUrls" style="height: 58vh"></video-wall>
+      <!-- <q-item-label header class="custom-item-label bg-purple-2 text-bold">最新预警</q-item-label> -->
       <my-logs style="height: 35vh"></my-logs>
     </q-page-container>
   </q-layout>

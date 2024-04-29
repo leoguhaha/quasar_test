@@ -1,31 +1,16 @@
 <template>
-  <q-table
-    row-key="id"
-    :rows="rows"
-    :columns="columns"
-    binary-state-sort
-    flat
-    bordered
-  >
+  <q-table dense row-key="id" :rows="rows" :columns="columns" binary-state-sort flat bordered hide-bottom>
     <template v-slot:body-cell-image="props">
       <q-td :props="props">
-        <img
-          :src="props.row.image"
-          class="my-table-image"
-          @click="openDialog(props.row.image)"
-          style="width: 100px; cursor: pointer"
-        />
+        <img :src="props.row.image" class="my-table-image" @click="openDialog(props.row.image)"
+          style="width: 100px; cursor: pointer" />
       </q-td>
     </template>
 
     <template v-slot:body-cell-location="props">
       <q-td :props="props">
-        <img
-          :src="props.row.locationImage"
-          class="my-table-image"
-          @click="openDialog(props.row.locationImage)"
-          style="width: 100px; cursor: pointer"
-        />
+        <img :src="props.row.locationImage" class="my-table-image" @click="openDialog(props.row.locationImage)"
+          style="width: 100px; cursor: pointer" />
       </q-td>
     </template>
   </q-table>
@@ -33,14 +18,7 @@
   <q-dialog v-model="dialog" fullscreen class="image-dialog">
     <q-card class="q-pa-md">
       <q-card-section class="row items-center">
-        <q-btn
-          icon="close"
-          @click="closeDialog"
-          round
-          dense
-          flat
-          class="q-ml-auto"
-        />
+        <q-btn icon="close" @click="closeDialog" round dense flat class="q-ml-auto" />
       </q-card-section>
       <q-card-section class="image-container" @wheel="handleWheel">
         <img :src="currentImage" :style="imageStyle" @load="resetImageStyle" />
@@ -62,7 +40,30 @@ const rows = ref([
     status: "处理中",
     area: "执勤区1",
   },
-  // 其余数据...
+  {
+    id: 2,
+    time: "2023-01-01 12:00",
+    locationImage: "https://via.placeholder.com/1080x720", // 假设图片地址
+    image: "https://via.placeholder.com/1080x720", // 假设图片地址
+    status: "处理中",
+    area: "执勤区1",
+  },
+  {
+    id: 3,
+    time: "2023-01-01 12:00",
+    locationImage: "https://via.placeholder.com/1080x720", // 假设图片地址
+    image: "https://via.placeholder.com/1080x720", // 假设图片地址
+    status: "处理中",
+    area: "执勤区1",
+  },
+  {
+    id: 4,
+    time: "2023-01-01 12:00",
+    locationImage: "https://via.placeholder.com/1080x720", // 假设图片地址
+    image: "https://via.placeholder.com/1080x720", // 假设图片地址
+    status: "处理中",
+    area: "执勤区1",
+  },
 ]);
 
 const columns = ref([
@@ -129,6 +130,6 @@ function handleWheel(event) {
 <style>
 .my-table-image {
   height: auto;
-  max-height: 64px;
+  max-height: 44px;
 }
 </style>
