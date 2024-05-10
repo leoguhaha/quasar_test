@@ -2,8 +2,8 @@
   <q-layout view="hHh Lpr lff">
     <q-tabs v-model="tab" dense class="bg-primary text-grey-5 shadow-2 bold-tabs" inline-label active-color="white"
       indicator-color="transparent">
-      <q-tab name="diaodu" icon="alarm" label="调度"/>
-      <q-tab name="ditu" icon="map" label="地图" />
+      <q-tab name="diaodu" icon="alarm" @click="navigationToMain" label="调度" />
+      <q-tab name="ditu" icon="map" label="地图" @click="navigateToMap"/>
       <q-tab name="jingqing" icon="warning" label="历史警情" />
     </q-tabs>
 
@@ -27,6 +27,7 @@
 import { ref } from "vue";
 import { useWebSocketSubscriptions } from "src/composables/useWebSocketSubscriptions";
 import EssentialLink from "src/components/EssentialLink.vue";
+import { useRouter } from 'vue-router';
 
 const { subscribe, unsubscribe } = useWebSocketSubscriptions();
 const leftDrawerOpen = ref(false);
@@ -36,6 +37,14 @@ const app_cmd_vel_msg = ref({
   w: 0,
 });
 const tab = ref('diaodu')
+const router = useRouter();
+
+function navigateToMap() {
+  router.push('/hk');
+}
+function navigateToMain(){
+  router.push('/');
+}
 
 // onMounted(() => {
 //   subscribe("/app_cmd_vel", (message) => {
@@ -80,6 +89,7 @@ const tab = ref('diaodu')
   text-align: center;
   /* 增加这一行确保每个 tab 内的文字也居中 */
 }
+
 .bold-tabs .q-tab__label {
   font-weight: bold;
 }

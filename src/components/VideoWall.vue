@@ -1,23 +1,3 @@
-<!-- <template>
-  <div>
-    <div class="video-top">
-      <div class="video-main">
-        <VideoDisplay :videoUrl="videoUrls[0]" :index="0" @videoClicked="handleVideoClicked" />
-      </div>
-      <div class="video-right column">
-        <div v-for="index in 4" :key="`right-${index}`" class="col">
-          <VideoDisplay :videoUrl="videoUrls[index]" :index="index" @videoClicked="handleVideoClicked" />
-        </div>
-      </div>
-    </div>
-    <div class="video-bottom row">
-      <div v-for="index in 4" :key="`bottom-${index}`" class="col" style="background-color: yellow">
-        <VideoDisplay :videoUrl="videoUrls[index + 4]" :index="index + 4" @videoClicked="handleVideoClicked" />
-      </div>
-    </div>
-  </div>
-</template> -->
-
 <template>
   <div class="video-container">
     <!-- 左侧大视频 -->
