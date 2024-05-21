@@ -1,6 +1,6 @@
 <template>
   <div class="video-container" style="background-color: yellow;">
-    <iframe :src="url" ref="iframeRef" style="background-color: greenyellow;"></iframe>
+    <iframe :src="computedUrl" ref="iframeRef" scrolling="no" frameborder="0"></iframe>
     <!-- <canvas :id="`video-canvas-${index}`"></canvas>
     <canvas :id="`overlay-canvas-${index}`" style="position: absolute; top: 0; left: 0; pointer-events: none"></canvas> -->
   </div>
@@ -9,6 +9,7 @@
 import { onMounted, watch, computed, ref } from "vue";
 import JSMpeg from "jsmpeg-player";
 // import { VideoControl } from '../assets/VideoCtrl';
+// import { WebVideoCtrl } from '../assets/webVideoCtrl';
 
 const props = defineProps({
   videoUrl: String,
@@ -22,8 +23,45 @@ const iframeRef = ref(null);
 // 发射点击事件
 const emit = defineEmits(['videoClicked']);
 const url = `src/components/demo${props.index}.html`;
+const computedUrl = computed(() => {
+  // 比如你的路径可能依赖于视频的URL，这里简单地返回videoUrl
+  // 实际上，你可能需要根据videoUrl进行更复杂的处理
+  if (props.index === 0) {
+    return `src/components/demo${props.index}.html`;
+  } else {
+    return `src/components/demo${props.index}.html`;
+  }
+});
 let player = null;
-let res = null;
+function postIframe(tp, lt) {
+  // let myMessage = iframeRef.value.offset; // iframe相对浏览器的偏移量 top 和left
+  let myMessage = {
+    top: tp,
+    left: lt
+  };
+  let parentHeight = iframeRef.value.offsetHeight;  //iframe窗口大小
+  let parentWidth = iframeRef.value.offsetWidth;  // //iframe窗口大小
+  var receiver = iframeRef.value.contentWindow;
+  console.log('info', parentHeight, parentWidth, myMessage, 'receiver', receiver);
+  receiver.postMessage({ parentHeight, parentWidth, myMessage }, '*');
+}
+function fd(wait) {
+  let timer = null
+  return function () {
+    if (timer != null) clearTimeout(timer)
+    timer = setTimeout(() => {
+      postIframe()
+      console.log('函数防抖触发');
+    }, wait)
+  }
+}
+let myfd = fd(1000)
+window.onresize = function () {
+  myfd()
+}
+window.onload = function () {
+  postIframe()
+}
 
 watch(() => props.videoUrl, () => {
   console.log("videoUrl changed from");
@@ -68,6 +106,16 @@ onMounted(() => {
   }
 
   loadScriptsInOrder();
+  iframeRef.value.onload = () => {
+    //获取iframe在整个页面的位置
+    let iframeOffset = iframeRef.value.getBoundingClientRect();
+    console.log('iframeOffset', iframeOffset);
+    let top = iframeOffset.top;
+    let left = iframeOffset.left;
+    iframeRef.value.contentWindow.moveTo(top, left);
+    iframeRef.value.contentWindow.initDemo();
+    postIframe(top, left); // 现在调用postIframe
+  };
 
 });
 // 重新加载视频
@@ -128,24 +176,21 @@ function drawRectangleOnCanvas(canvas, x, y, width, height, color = "red") {
 .video-container {
   position: relative;
   /* 确保容器有具体的尺寸 */
-  /* width: 100%; */
+  width: 100%;
   /* 根据你的需要调整 */
-  /* height: 100%; */
+  height: 100%;
   /* 例如，根据你的需要调整为视口高度的100% */
   /* overflow: hidden; */
   border: 1px solid #ccc;
 }
-.video-container iframe {
+
+iframe {
   width: 100%;
   height: 100%;
-  position: absolute; /* 如果需要的话 */
-  top: 0;
-  left: 0;
+  border: none;
+  background-color: blueviolet;
+  position: absolute;
 }
-/* iframe {
-  width: 100%;
-  height: 100%;
-} */
 
 .video-container canvas {
   position: absolute;

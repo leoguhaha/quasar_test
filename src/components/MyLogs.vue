@@ -15,7 +15,7 @@
     </template>
   </q-table>
 
-  <q-dialog v-model="dialog" fullscreen class="image-dialog">
+  <q-dialog v-model="dialog" fullscreen class="image-dialog" id="image-dialog">
     <q-card class="q-pa-md">
       <q-card-section class="row items-center">
         <q-btn icon="close" @click="closeDialog" round dense flat class="q-ml-auto" />
@@ -105,6 +105,10 @@ let scale = 1;
 function openDialog(imageSrc) {
   currentImage.value = imageSrc;
   dialog.value = true;
+  //通过id找到dialog元素
+  const dialogElement = document.getElementById("image-dialog");
+  //设置z-index
+  dialogElement.style.zIndex = 9999;
 }
 
 function closeDialog() {

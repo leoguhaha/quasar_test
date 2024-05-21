@@ -20,6 +20,7 @@
       cbInitPluginComplete: null
     };
     var m_pluginOBJECT = null;
+    var m_plugin_map = {};
     var m_iSelWnd = 0;
     var m_bFullScreen = false;
     var m_deviceSet = [];
@@ -142,11 +143,14 @@
       let oPromise = new Promise(function (resolve, reject) {
         m_pluginOBJECT.JS_GetLocalConfig()
           .then(oLocalCofing => {
+            console.log('localconfig', oLocalCofing)
             m_oLocalCfg = oLocalCofing;
             resolve()
-          }, () => {
+          }).catch(errorCode => {
+            console.error('Error fetching local config with error code:', errorCode);
+            // Handle the error based on the error code, for example, retry or notify user.
             reject()
-          })
+          });
       });
       return oPromise
     };
@@ -175,6 +179,7 @@
           reject(_oParamsError);
           return
         }
+        console.log('initplugin szcontainerid---------', szContainerID)
         var oParam = {
           szId: szContainerID,
           iType: 1,
@@ -193,9 +198,10 @@
           },
           iPluginType: 2,
           onConnectSuccess: () => {
+            console.log('onConnectSuccess called');
             var oElem = $("#" + szContainerID);
-            m_pluginOBJECT.JS_Resize(oElem.width(), oElem.height());
-            if (2 !== m_pluginOBJECT.iPluginMode) {
+            m_plugin_map[szContainerID].JS_Resize(oElem.width(), oElem.height());
+            if (2 !== m_plugin_map[szContainerID].iPluginMode) {
               reject({
                 errorCode: ERROR_CODE_PLAY_PLUGININITFAIL,
                 errorMsg: "Plugin init failed."
@@ -203,15 +209,21 @@
               return
             }
             var iWndFull = m_options.bWndFull ? 1 : 0;
-            m_pluginOBJECT.JS_SetFullScreenCapability(iWndFull);
-            m_pluginOBJECT.JS_SetPackageType(m_options.iPackageType);
+            m_plugin_map[szContainerID].JS_SetFullScreenCapability(iWndFull);
+            m_plugin_map[szContainerID].JS_SetPackageType(m_options.iPackageType);
             _initPluginEvent();
             _initLocalCfg()
               .then(() => {
+                console.log('initLocalCfg resolve');
                 resolve()
               })
+              .catch((err) => {
+                console.log('initLocalCfg error', err);
+                reject(err);
+              });
           },
           onConnectError: () => {
+            console.log('onConnectError called');
             reject({
               errorCode: ERROR_CODE_PLAY_PLUGININITFAIL,
               errorMsg: "Plugin init failed."
@@ -219,8 +231,23 @@
           },
           szBasePath: m_utilsInc.getDirName()
         };
-        m_pluginOBJECT = new JSVideoPlugin(oParam)
+        console.log('step2--------')
+        console.log('len m_plugin_map', Object.keys(m_plugin_map).length)
+        // if (!m_plugin_map[szContainerID]) {
+        //   m_pluginOBJECT = new JSVideoPlugin(oParam);
+        //   console.log('new m-plugin....')
+        //   m_plugin_map[szContainerID] = m_pluginOBJECT;
+        //   console.log('m_plugin_map-------', m_plugin_map);
+        // } else {
+        //   console.log(szContainerID, 'already exists')
+        // }
+        m_pluginOBJECT = new JSVideoPlugin(oParam);
+        console.log('new m-plugin....')
+        m_plugin_map[szContainerID] = m_pluginOBJECT;
+        console.log('m_plugin_map-------', m_plugin_map);
+
       });
+      console.log('return initplugin')
       return oPromise
     };
     var _initPluginEvent = function () {
@@ -572,17 +599,16 @@
     this.I_InitPlugin = function (options) {
       m_utilsInc.extend(m_options, options);
       var szDirName = m_utilsInc.getDirName();
-      console.log('szDirName', szDirName);
       if (szDirName) {
         if ("object" === typeof exports && typeof module !== "undefined") { } else if ("function" === typeof define && define.amd) {
-          require([szDirName + "../assets/jsVideoPlugin-1.0.0.min.js"], function (o) {
+          require([szDirName + "/jsVideoPlugin-1.0.0.min.js"], function (o) {
             window.JSVideoPlugin = o.JSVideoPlugin;
             if (options.cbInitPluginComplete) {
               options.cbInitPluginComplete()
             }
           })
         } else {
-          m_utilsInc.loadScript(szDirName + "../assets/jsVideoPlugin-1.0.0.min.js", function () {
+          m_utilsInc.loadScript(szDirName + "/jsVideoPlugin-1.0.0.min.js", function () {
             if (options.cbInitPluginComplete) {
               options.cbInitPluginComplete()
             }
@@ -591,32 +617,14 @@
       }
       window.addEventListener("resize", function () {
         if (m_pluginOBJECT !== null) {
-          console.log('resize info', m_options.szContainerID)
           var oElem = $("#" + m_options.szContainerID);
           m_pluginOBJECT.JS_Resize(oElem.width(), oElem.height())
-          console.log('resize info', oElem.width(), oElem.height())
         }
       });
       window.addEventListener("unload", function () { })
-      //监听message
-      window.addEventListener('message', function (e) {
-        console.log('data', e.data)  //e.data为传递过来的数据
-        inittop = e.data.myMessage.top
-        initLeft = e.data.myMessage.left
-        newheight = e.data.parentHeight
-        newWidth = e.data.parentWidth
-
-        $("#test").css("width", newWidth + "px");
-        $("#test").css("height", newheight + "px");
-        //操作dom元素 修改插件的相对浏览器的相对位置
-        $("#test").css("margin-top", Number(inittop) + 1 + "px");
-        $("#test").css("margin-left", Number(initLeft) + 1 + "px");
-        if (m_pluginOBJECT != null) {
-          m_pluginOBJECT.JS_Resize(newWidth, newheight);
-        }
-      })
     };
     this.I_InsertOBJECTPlugin = function (szContainerID) {
+      // console.log('init id', szContainerID)
       return _initPlugin(szContainerID)
     };
     this.I_WriteOBJECT_XHTML = function () {
@@ -660,17 +668,17 @@
         var szDeviceIdentify = szIP + "_" + iPort;
         var iIndex = this.findDeviceIndexByIP(szDeviceIdentify);
         if (iIndex != -1) {
-          if (options.error) {
-            options.error({
-              errorCode: ERROR_CODE_LOGIN_REPEATLOGIN,
-              errorMsg: "The device is already login."
-            })
-          }
-          reject({
-            errorCode: ERROR_CODE_LOGIN_REPEATLOGIN,
-            errorMsg: "The device is already login."
-          });
-          return
+          // if (options.error) {
+          //   options.error({
+          //     errorCode: ERROR_CODE_LOGIN_REPEATLOGIN,
+          //     errorMsg: "The device is already login."
+          //   })
+          // }
+          // reject({
+          //   errorCode: ERROR_CODE_LOGIN_REPEATLOGIN,
+          //   errorMsg: "The device is already login."
+          // });
+          resolve()
         }
         var cgiInstance = m_ISAPIProtocol;
         var oDeviceInfo = new deviceInfoClass;
@@ -778,7 +786,7 @@
       });
       return oPromise
     };
-    this.I_StartRealPlay = function (szDeviceIdentify, options) {
+    this.I_StartRealPlay = function (szDeviceIdentify, containerId, options) {
       let oPromise = new Promise(function (resolve, reject) {
         var iIndex = this.findDeviceIndexByIP(szDeviceIdentify);
         var newOptions = {
@@ -787,12 +795,14 @@
           iChannelID: 1,
           bZeroChannel: false
         };
+        // console.log('realplay options', options);
         m_utilsInc.extend(newOptions, options);
         if (iIndex != -1) {
           var oDeviceInfo = m_deviceSet[iIndex];
-          var iWndIndex = this.findWndIndexByIndex(newOptions.iWndIndex);
+          // var iWndIndex = this.findWndIndexByIndex(newOptions.iWndIndex);
+          var iWndIndex = -1;
           if (-1 == iWndIndex) {
-            oDeviceInfo.oProtocolInc.startRealPlay(oDeviceInfo, newOptions)
+            oDeviceInfo.oProtocolInc.startRealPlay(oDeviceInfo, containerId, newOptions)
               .then(function () {
                 if (options.success) {
                   options.success()
@@ -3059,11 +3069,12 @@
     ISAPIProtocol.prototype.getPortInfo = function (oDeviceInfo, options) {
       return m_webVideoCtrl.I_SendHTTPRequest(oDeviceInfo.szDeviceIdentify, this.CGI.getPortInfo, options)
     };
-    ISAPIProtocol.prototype.startRealPlay = function (oDeviceInfo, options) {
+    ISAPIProtocol.prototype.startRealPlay = function (oDeviceInfo, containerId, options) {
       let oPromise = new Promise(async function (resolve, reject) {
         var iChannelID = options.iChannelID * 100 + options.iStreamType,
           szUrl = "";
         var szRtspIP = m_utilsInc.delPort(oDeviceInfo.szIP);
+        console.log('szRtspIP', szRtspIP)
         var iRtspPort = oDeviceInfo.iRtspPort;
         if (options.iPort) {
           iRtspPort = options.iPort
@@ -3083,11 +3094,15 @@
           wndInfo.iPlayStatus = PLAY_STATUS_REALPLAY;
           m_wndSet.push(wndInfo)
         };
-        await m_pluginOBJECT.JS_SetSecretKey(0, m_oLocalCfg.secretKey, 1);
-        m_pluginOBJECT.JS_Play(szUrl, {
+        // console.log('oDeviceInfo', oDeviceInfo, 'containerId', containerId, 'options', options, 'szUrl', szUrl)
+        console.log('play----------')
+        await m_plugin_map[containerId].JS_SetSecretKey(0, m_oLocalCfg.secretKey, 1);
+        console.log('set key success----------')
+        console.log('m_plugin_map', m_plugin_map[containerId])
+        m_plugin_map[containerId].JS_Play(szUrl, {
           auth: oDeviceInfo.szAuth,
           userInfo: oDeviceInfo.szAuth
-        }, options.iWndIndex, "", "", options.bFlag)
+        }, 0, "", "", options.bFlag)
           .then(() => {
             addToWndSet();
             resolve()
@@ -4280,19 +4295,18 @@
     m_utilsInc = new Utils;
     return this
   }();
-  // Factory function to create new instances
   var NS = window.WebVideoCtrl = WebVideoCtrl;
   NS.version = "3.3.1"
 })(this);
-// if ("object" === typeof exports && typeof module !== "undefined") { } else if ("function" === typeof define && define.amd) {
-//   define(function () {
-//     return WebVideoCtrl
-//   })
+// if ("object" === typeof exports && typeof module !== "undefined") {} else if ("function" === typeof define && define.amd) {
+// 	define(function() {
+// 		return WebVideoCtrl
+// 	})
 // } else if ("function" === typeof define && define.cmd) {
-//   define(function (require, exports, module) {
-//     module.exports = WebVideoCtrl
-//   })
-// } else { }
+// 	define(function(require, exports, module) {
+// 		module.exports = WebVideoCtrl
+// 	})
+// } else {}
 if (typeof exports === "object" && typeof module !== "undefined") {
   // CommonJS
   module.exports = WebVideoCtrl;

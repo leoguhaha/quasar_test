@@ -1,8 +1,11 @@
 (function () {
-  if (window.WebVideoCtrl) {
-    return
-  }
-  var WebVideoCtrl = function () {
+  if (window.MyNamespace === undefined) {
+    window.MyNamespace = {};
+}
+if (window.MyNamespace.WebVideoCtrl2) {
+    return;
+}
+  var WebVideoCtrl2 = function () {
     var m_szWidth = "100%";
     var m_szHeight = "100%";
     var m_options = {
@@ -3852,13 +3855,13 @@
         szDirName = m_options.szBasePath
       } else {
         var szDirNameRegex = /[^?#]*\//;
-        var oScript = document.getElementById("videonode");
+        var oScript = document.getElementById("videonode2");
         if (oScript) {
           szDirName = oScript.src.match(szDirNameRegex)[0]
         } else {
           var aScript = document.scripts;
           for (var i = 0, iLen = aScript.length; i < iLen; i++) {
-            if (aScript[i].src.indexOf("webVideoCtrl.js") > -1) {
+            if (aScript[i].src.indexOf("webVideoCtrl2.js") > -1) {
               oScript = aScript[i];
               break
             }
@@ -4280,30 +4283,16 @@
     m_utilsInc = new Utils;
     return this
   }();
-  // Factory function to create new instances
-  var NS = window.WebVideoCtrl = WebVideoCtrl;
-  NS.version = "3.3.1"
+  var NS = window.MyNamespace.WebVideoCtrl2 = WebVideoCtrl2;
+  window.MyNamespace.WebVideoCtrl2.version = "3.3.0";
+  NS.version = "3.3.1.2"
 })(this);
-// if ("object" === typeof exports && typeof module !== "undefined") { } else if ("function" === typeof define && define.amd) {
-//   define(function () {
-//     return WebVideoCtrl
-//   })
-// } else if ("function" === typeof define && define.cmd) {
-//   define(function (require, exports, module) {
-//     module.exports = WebVideoCtrl
-//   })
-// } else { }
-if (typeof exports === "object" && typeof module !== "undefined") {
-  // CommonJS
-  module.exports = WebVideoCtrl;
-} else if (typeof define === "function" && define.amd) {
-  // AMD
+if ("object" === typeof exports && typeof module !== "undefined") { } else if ("function" === typeof define && define.amd) {
   define(function () {
-    return WebVideoCtrl;
-  });
-} else if (typeof define === "function" && define.cmd) {
-  // CMD
+    return WebVideoCtrl2
+  })
+} else if ("function" === typeof define && define.cmd) {
   define(function (require, exports, module) {
-    module.exports = WebVideoCtrl;
-  });
-}
+    module.exports = WebVideoCtrl2
+  })
+} else { }

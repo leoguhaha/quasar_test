@@ -1,5 +1,7 @@
 <template>
   <div class="video-container">
+    <!-- <WebVideoCtrlComponent containerId="videnContainer1"></WebVideoCtrlComponent> -->
+    <!-- <WebVideoCtrlComponent containerId="videnContainer2"></WebVideoCtrlComponent> -->
     <!-- 左侧大视频 -->
     <div class="video-large">
       <VideoDisplay :videoUrl="state.videoUrls[0]" :index="0" @videoClicked="handleVideoClicked" />
@@ -51,8 +53,9 @@ export default {
 };
 </script> -->
 <script setup>
-import { ref, reactive, toRefs } from 'vue';
-import VideoDisplay from "src/components/VideoDisplay.vue";
+import { ref, reactive, toRefs, onMounted } from 'vue';
+import VideoDisplay from "src/components/VideoDisplay1.vue";
+// import WebVideoCtrlComponent from "src/components/WebVideoCtrlComponent.vue";
 
 // 定义 props
 const props = defineProps({
@@ -79,6 +82,43 @@ const handleVideoClicked = (index) => {
   // 重新加载视频
 
 };
+// onMounted(() => {
+//   // 创建一个函数用于按顺序加载脚本
+//   function loadScript(src) {
+//     return new Promise((resolve, reject) => {
+//       const script = document.createElement('script');
+//       script.src = src;
+//       script.onload = () => resolve(script);
+//       script.onerror = () => reject(new Error(`Script load error for ${src}`));
+//       document.head.appendChild(script);
+//     });
+//   }
+
+//   // 按顺序加载脚本
+//   async function loadScriptsInOrder() {
+//     try {
+//       // await loadScript('src/assets/jquery-1.7.1.min.js');
+//       console.log('jQuery loaded.');
+
+//       // await loadScript('src/assets/jsVideoPlugin-1.0.0.min.js');
+//       console.log('jsvideo.js loaded.');
+
+//       await loadScript('src/assets/webVideoCtrl.js');
+//       console.log('webVideoCtrl.js loaded.');
+
+//       // await loadScript('src/assets/VideoCtrl.js');
+//       // console.log('demo.js loaded.');
+//       // let divname = `video-canvas-${props.index}`
+//       // const videoControlInstance1 = new VideoControl(divname, '10.20.0.122', '80', 'admin', 'Asb11023', WebVideoCtrl);
+
+
+//     } catch (error) {
+//       console.error('Failed to load scripts:', error);
+//     }
+//   }
+
+//   loadScriptsInOrder();
+// })
 
 </script>
 
@@ -90,7 +130,8 @@ const handleVideoClicked = (index) => {
 }
 
 .video-large {
-  width: 60%; /* 调整大视频显示区域的宽度 */
+  width: 60%;
+  /* 调整大视频显示区域的宽度 */
   height: 100%;
   background-color: aqua;
 }
@@ -99,17 +140,21 @@ const handleVideoClicked = (index) => {
 .video-right {
   display: flex;
   flex-direction: column;
-  width: 20%; /* 中间和右侧区域各占 25% 的宽度 */
+  width: 20%;
+  /* 中间和右侧区域各占 25% 的宽度 */
 }
 
 .video-small {
   width: 100%;
-  height: 25%; /* 每个小视频占据 25% 的高度 */
-  background-color: lightgrey; /* 可根据需要修改背景颜色 */
+  height: 25%;
+  /* 每个小视频占据 25% 的高度 */
+  background-color: lightgrey;
+  /* 可根据需要修改背景颜色 */
   /* margin-bottom: 1px; 添加一些边距 */
 }
 
 .video-small:last-child {
-  margin-bottom: 0; /* 移除最后一个元素的底部边距 */
+  margin-bottom: 0;
+  /* 移除最后一个元素的底部边距 */
 }
 </style>

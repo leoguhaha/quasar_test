@@ -1,8 +1,8 @@
 (function () {
-  if (window.WebVideoCtrl) {
+  if (window.WebVideoCtrl5) {
     return
   }
-  var WebVideoCtrl = function () {
+  var WebVideoCtrl5 = function () {
     var m_szWidth = "100%";
     var m_szHeight = "100%";
     var m_options = {
@@ -4280,30 +4280,15 @@
     m_utilsInc = new Utils;
     return this
   }();
-  // Factory function to create new instances
-  var NS = window.WebVideoCtrl = WebVideoCtrl;
+  var NS = window.WebVideoCtrl5 = WebVideoCtrl5;
   NS.version = "3.3.1"
 })(this);
-// if ("object" === typeof exports && typeof module !== "undefined") { } else if ("function" === typeof define && define.amd) {
-//   define(function () {
-//     return WebVideoCtrl
-//   })
-// } else if ("function" === typeof define && define.cmd) {
-//   define(function (require, exports, module) {
-//     module.exports = WebVideoCtrl
-//   })
-// } else { }
-if (typeof exports === "object" && typeof module !== "undefined") {
-  // CommonJS
-  module.exports = WebVideoCtrl;
-} else if (typeof define === "function" && define.amd) {
-  // AMD
+if ("object" === typeof exports && typeof module !== "undefined") { } else if ("function" === typeof define && define.amd) {
   define(function () {
-    return WebVideoCtrl;
-  });
-} else if (typeof define === "function" && define.cmd) {
-  // CMD
+    return WebVideoCtrl5
+  })
+} else if ("function" === typeof define && define.cmd) {
   define(function (require, exports, module) {
-    module.exports = WebVideoCtrl;
-  });
-}
+    module.exports = WebVideoCtrl5
+  })
+} else { }

@@ -1,12 +1,10 @@
-(function() {
-	if (window.WebVideoCtrl0) {
-		return
-	}
-	var WebVideoCtrl0 = function() {
+const WebVideoCtrl = (function() {
+
+	function WebVideoCtrl() {
 		var m_szWidth = "100%";
 		var m_szHeight = "100%";
 		var m_options = {
-			szversion: "V3.3.1 build20231030",
+			szversion: "V3.3.0 build20230314",
 			szContainerID: "",
 			szColorProperty: "",
 			szBasePath: "",
@@ -550,6 +548,16 @@
 		};
 		this.I_WriteOBJECT_XHTML = function() {
 			return 0
+		};
+		this.I_DestroyPlugin = function() {
+			let oPromise = new Promise(function(resolve, reject) {
+				m_pluginOBJECT.JS_DestroyAll().then(() => {
+					resolve()
+				}, () => {
+					reject(_oUnKnownError)
+				})
+			});
+			return oPromise
 		};
 		this.I_OpenFileDlg = async function(iType) {
 			let oPromise = new Promise(function(resolve, reject) {
@@ -4123,17 +4131,11 @@
 		m_ISAPIProtocol = new ISAPIProtocol;
 		m_utilsInc = new Utils;
 		return this
-	}();
-	var NS = window.WebVideoCtrl0 = WebVideoCtrl0;
-	NS.version = "3.3.1"
-})(this);
-if ("object" === typeof exports && typeof module !== "undefined") {} else if ("function" === typeof define && define
-	.amd) {
-	define(function() {
-		return WebVideoCtrl0
-	})
-} else if ("function" === typeof define && define.cmd) {
-	define(function(require, exports, module) {
-		module.exports = WebVideoCtrl0
-	})
-} else {}
+	};
+	return WebVideoCtrl;
+})();
+// 设置版本或其他属性...
+WebVideoCtrl.version = "3.3.0";
+
+// ES模块导出方式
+export { WebVideoCtrl };

@@ -1,5 +1,5 @@
 // CommonJS模块
-$(function () {
+function initDemo(){
   WebVideoCtrl.I_InitPlugin({
     bWndFull: false,     //是否支持单窗口双击全屏，默认支持 true:支持 false:不支持
     iWndowType: 1,
@@ -25,20 +25,6 @@ $(function () {
                           success: function () {
                               szInfo = "开始预览成功！";
                               console.log(szDeviceIdentify + " " + szInfo);
-                                                  // 获取你想修改的DOM元素
-                              var myElement = document.getElementById('test');
-                              if (myElement) {
-                                  // 清空所有内联样式
-                                  myElement.style = "";
-
-                                  // 添加新的样式 - 以下是示例
-                                  myElement.style.display = "flex"; // 使用flex布局
-                                  myElement.style.justifyContent = "center"; // 水平居中
-                                  myElement.style.alignItems = "center"; // 垂直居中
-                                  myElement.style.backgroundColor = "#f0f0f0"; // 背景色
-                                  myElement.style.width = "600px"
-                                  myElement.style.marginLeft = "500px"
-                              }
                           },
                           error: function (oError) {
                               szInfo = "开始预览失败！";
@@ -77,4 +63,15 @@ $(function () {
       })
   }
 })
-});
+};
+
+function moveTo(top, left){
+  // 将test这个div移动到top和left位置
+  var test = document.getElementById('test');
+  console.log('test0', test);
+  console.log('top', top);
+  console.log('left', left);
+  test.style.marginTop = top;
+  test.style.marginLeft = left;
+  console.log('test1', test);
+}

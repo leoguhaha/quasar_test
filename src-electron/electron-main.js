@@ -32,7 +32,7 @@ function createWindow() {
     icon: path.resolve(__dirname, "icons/icon.png"), // tray icon
     width: 1000,
     height: 600,
-    fullscreen: true, // 添加此行代码
+    fullscreen: false, // 添加此行代码
     useContentSize: true,
     webPreferences: {
       contextIsolation: true,

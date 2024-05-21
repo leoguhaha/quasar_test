@@ -2,7 +2,7 @@
   <q-layout view="hHh Lpr lff">
     <q-tabs v-model="tab" dense class="bg-primary text-grey-5 shadow-2 bold-tabs" inline-label active-color="white"
       indicator-color="transparent">
-      <q-tab name="diaodu" icon="alarm" @click="navigationToMain" label="调度" />
+      <q-tab name="diaodu" icon="alarm" @click="navigateToMain" label="调度" />
       <q-tab name="ditu" icon="map" label="地图" @click="navigateToMap"/>
       <q-tab name="jingqing" icon="warning" label="历史警情" />
     </q-tabs>
