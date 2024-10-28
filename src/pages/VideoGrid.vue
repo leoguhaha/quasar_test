@@ -32,20 +32,23 @@ import { ref } from 'vue';
 
 const videoUrls = ref([
   "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/101",
-  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/101",
-  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/101",
-  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/101",
-  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/101",
-  // "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/101",
-  // "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/101",
-  // "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/101",
-  // "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/101",
-  "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/101",
-  "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/101",
-  "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/101",
-  "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/101",
-  // "rtsp://admin:Asb11023@192.168.111.10:554/Streaming/Channels/102",
-  // "rtsp://admin:Asb11023@192.168.111.10:554/Streaming/Channels/201",
+  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  "rtsp://admin:Asb11023@10.20.0.122:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/101",
+  // "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/201",
+  // "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
+  // "rtsp://admin:Asb11023@192.168.111.69:554/Streaming/Channels/102",
 ]);
 const leftDrawerOpen = ref(true);
 const menuItems = ref([
@@ -59,7 +62,7 @@ const menuItems = ref([
   },
   {
     label: '执勤组3',
-    children: ['机器人A4', '固定C4', '车载B3', '车载B4', 'checc', 'casd']
+    children: ['机器人A4', '固定C4', '车载B3', '车载B4']
   }
 ]);
 function handleClick(item) {

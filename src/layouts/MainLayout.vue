@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useWebSocketSubscriptions } from "src/composables/useWebSocketSubscriptions";
 import EssentialLink from "src/components/EssentialLink.vue";
 import { useRouter } from 'vue-router';
@@ -46,26 +46,49 @@ function navigateToMain(){
   router.push('/');
 }
 
-// onMounted(() => {
-//   subscribe("/app_cmd_vel", (message) => {
-//     // 这里处理/app_cmd_vel话题的消息
-//     //console.log("Received /app_cmd_vel message:", message);
-//     let msg_obj = JSON.parse(JSON.parse(message));
-//     //console.log("MSG Content:", msg_obj["msg"]);
-//     app_cmd_vel_msg.value = {
-//       v: msg_obj.msg?.v ?? 0, // 如果v不存在，使用默认值0
-//       w: msg_obj.msg?.w ?? 0, // 如果w不存在，使用默认值0
-//     };
-//   });
-//   subscribe("/cmd_status", (message) => {
-//     // 这里处理/app_cmd_vel话题的消息
-//     //console.log("Received /app_cmd_vel message:", message);
-//   });
-// });
-// onUnmounted(() => {
-//   unsubscribe("/app_cmd_vel");
-//   unsubscribe("/cmd_status");
-// });
+onMounted(() => {
+  subscribe("/test_pub", (message) => {
+    // 这里处理/app_cmd_vel话题的消息
+    // console.log("Received /test_pub message:", message);
+    // console.log('type is', typeof(message))
+    let aa = JSON.parse(message)
+    //如果aa还是json格式，就再转换一次
+    if(typeof(aa) == 'string'){
+      aa = JSON.parse(aa)
+    }
+    aa = aa.msg
+    console.log('aa1-info:', aa.sn)
+    // let msg_obj = JSON.parse(JSON.parse(message));
+    // console.log("app_cmd_vel info:", msg_obj["msg"]);
+    // app_cmd_vel_msg.value = {
+    //   v: msg_obj.msg?.v ?? 0, // 如果v不存在，使用默认值0
+    //   w: msg_obj.msg?.w ?? 0, // 如果w不存在，使用默认值0
+    // };
+  });
+  subscribe("/test_pub2", (message) => {
+    // 这里处理/app_cmd_vel话题的消息
+    // console.log("Received /test_pub message:", message);
+    // console.log('type is', typeof(message))
+    let aa = JSON.parse(message)
+    //如果aa还是json格式，就再转换一次
+    if(typeof(aa) == 'string'){
+      aa = JSON.parse(aa)
+    }
+    aa = aa.msg
+    console.log('aa2-info:', aa.sn)
+    // let msg_obj = JSON.parse(JSON.parse(message));
+    // console.log("app_cmd_vel info:", msg_obj["msg"]);
+    // app_cmd_vel_msg.value = {
+    //   v: msg_obj.msg?.v ?? 0, // 如果v不存在，使用默认值0
+    //   w: msg_obj.msg?.w ?? 0, // 如果w不存在，使用默认值0
+    // };
+  });
+});
+onUnmounted(() => {
+  unsubscribe("/test_pub2");
+  // unsubscribe("/cmd_status");
+});
+
 </script>
 <style>
 .header-flex-center {

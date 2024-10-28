@@ -1,15 +1,12 @@
 <template>
-  <div class="video-container" style="background-color: yellow;">
-    <iframe :src="computedUrl" ref="iframeRef" scrolling="no" frameborder="0"></iframe>
-    <!-- <canvas :id="`video-canvas-${index}`"></canvas>
-    <canvas :id="`overlay-canvas-${index}`" style="position: absolute; top: 0; left: 0; pointer-events: none"></canvas> -->
+  <div class="video-container">
+    <canvas :id="`video-canvas-${index}`"></canvas>
+    <canvas :id="`overlay-canvas-${index}`" style="position: absolute; top: 0; left: 0; pointer-events: none"></canvas>
   </div>
 </template>
 <script setup>
-import { onMounted, watch, computed, ref } from "vue";
+import { onMounted, watch } from "vue";
 import JSMpeg from "jsmpeg-player";
-// import { VideoControl } from '../assets/VideoCtrl';
-// import { WebVideoCtrl } from '../assets/webVideoCtrl';
 
 const props = defineProps({
   videoUrl: String,
@@ -19,104 +16,54 @@ const props = defineProps({
     default: "100%",
   },
 });
-const iframeRef = ref(null);
 // 发射点击事件
 const emit = defineEmits(['videoClicked']);
-const url = `src/components/demo${props.index}.html`;
-const computedUrl = computed(() => {
-  // 比如你的路径可能依赖于视频的URL，这里简单地返回videoUrl
-  // 实际上，你可能需要根据videoUrl进行更复杂的处理
-  if (props.index === 0) {
-    return `src/components/demo${props.index}.html`;
-  } else {
-    return `src/components/demo${props.index}.html`;
-  }
-});
 let player = null;
-function postIframe(tp, lt) {
-  // let myMessage = iframeRef.value.offset; // iframe相对浏览器的偏移量 top 和left
-  let myMessage = {
-    top: tp,
-    left: lt
-  };
-  let parentHeight = iframeRef.value.offsetHeight;  //iframe窗口大小
-  let parentWidth = iframeRef.value.offsetWidth;  // //iframe窗口大小
-  var receiver = iframeRef.value.contentWindow;
-  console.log('info', parentHeight, parentWidth, myMessage, 'receiver', receiver);
-  receiver.postMessage({ parentHeight, parentWidth, myMessage }, '*');
-}
-function fd(wait) {
-  let timer = null
-  return function () {
-    if (timer != null) clearTimeout(timer)
-    timer = setTimeout(() => {
-      postIframe()
-      console.log('函数防抖触发');
-    }, wait)
-  }
-}
-let myfd = fd(1000)
-window.onresize = function () {
-  myfd()
-}
-window.onload = function () {
-  postIframe()
-}
-
-watch(() => props.videoUrl, () => {
-  console.log("videoUrl changed from");
-  if (iframeRef.value) {
-    iframeRef.value.src = url;
-  }
-}, { immediate: true });
+let res = null;
 
 onMounted(() => {
-  // 创建一个函数用于按顺序加载脚本
-  function loadScript(src) {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = src;
-      script.onload = () => resolve(script);
-      script.onerror = () => reject(new Error(`Script load error for ${src}`));
-      document.head.appendChild(script);
-    });
+  const videoUrl = props.videoUrl;
+  // 初始化rtsp，通知后端，让后端进行rtsp拉流，并且转成websocket
+  res = window.mainApi.sendSync("openRtsp", videoUrl);
+  if (res.code !== 200) {
+    console.error(res.msg);
+    // 前端直接弹框
+    alert(res.msg);
+    return;
   }
+  const wsUrl = res.ws;
+  // console.log("wsUrl", wsUrl);
+  initializePlayer(wsUrl);
+  const videoCanvas = document.getElementById(`video-canvas-${props.index}`);
+  videoCanvas.addEventListener('click', () => {
+    // 当点击时，发送一个videoClicked事件，附带视频索引
+    emit('videoClicked', props.index);
+  });
+  // const overlayCanvas = document.getElementById(`overlay-canvas-${props.index}`);
+  // overlayCanvas.width = overlayCanvas.offsetWidth;
+  // overlayCanvas.height = overlayCanvas.offsetHeight;
+  // setInterval(() => {
+  //   // 清除之前的绘制内容
+  //   overlayCanvas
+  //     .getContext("2d")
+  //     .clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+  //   // 画框和文字
+  //   drawRectangleOnCanvas(overlayCanvas, 200, 100, 100, 50);
+  // }, 100);
 
-  // 按顺序加载脚本
-  async function loadScriptsInOrder() {
-    try {
-      // await loadScript('src/assets/jquery-1.7.1.min.js');
-      console.log('jQuery loaded.');
-
-      await loadScript('src/assets/jsVideoPlugin-1.0.0.min.js');
-      console.log('jsvideo.js loaded.');
-
-      // await loadScript('src/assets/webVideoCtrl.js');
-      console.log('webVideoCtrl.js loaded.');
-
-      // await loadScript('src/assets/VideoCtrl.js');
-      console.log('demo.js loaded.');
-      let divname = `video-canvas-${props.index}`
-      // const videoControlInstance1 = new VideoControl(divname, '10.20.0.122', '80', 'admin', 'Asb11023', WebVideoCtrl);
-
-
-    } catch (error) {
-      console.error('Failed to load scripts:', error);
-    }
-  }
-
-  loadScriptsInOrder();
-  iframeRef.value.onload = () => {
-    //获取iframe在整个页面的位置
-    let iframeOffset = iframeRef.value.getBoundingClientRect();
-    console.log('iframeOffset', iframeOffset);
-    let top = iframeOffset.top;
-    let left = iframeOffset.left;
-    iframeRef.value.contentWindow.moveTo(top, left);
-    iframeRef.value.contentWindow.initDemo();
-    postIframe(top, left); // 现在调用postIframe
+  // 假设一个用于重载视频的方法
+  const reloadVideo = () => {
+    console.log('Reloading video for URL', props.videoUrl);
+    // 重载视频逻辑...
+    reloadUrl();
   };
 
+  // 使用Vue的响应性API监听props.videoUrl的变化
+  watch(() => props.videoUrl, (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+      reloadVideo();
+    }
+  });
 });
 // 重新加载视频
 function reloadUrl() {
@@ -180,16 +127,8 @@ function drawRectangleOnCanvas(canvas, x, y, width, height, color = "red") {
   /* 根据你的需要调整 */
   height: 100%;
   /* 例如，根据你的需要调整为视口高度的100% */
-  /* overflow: hidden; */
+  overflow: hidden;
   border: 1px solid #ccc;
-}
-
-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  background-color: blueviolet;
-  position: absolute;
 }
 
 .video-container canvas {
